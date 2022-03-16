@@ -1,8 +1,8 @@
-function[] = fRoboAnimation_Robo(FH,type,q, r)
+function[] = fRoboAnimation_Robo(FH,type,q)
 
 %**************************************************************************
 %
-%   [] = fRoboAnimation_Robo(FH,q, r)
+%   [] = fRoboAnimation_Robo(FH,q)
 %
 %       q       : ä÷êﬂäpìx      q = [q1, q2, q3].'
 %       r       : éËêÊà íu      r = [x, y].'
@@ -69,7 +69,7 @@ Hand = [ cos(sum(imcomplement(Joint).*q(:)))  -sin(sum(imcomplement(Joint).*q(:)
          sin(sum(imcomplement(Joint).*q(:))),  cos(sum(imcomplement(Joint).*q(:))) ]*Hand_0;
 
 
-plot(r(1,:),r(2,:),'g-', 'lineWidth',2.0);%, 'Color',Color);
+%plot(r(1,:),r(2,:),'g-', 'lineWidth',2.0);%, 'Color',Color);
 
 P = plot( robo(1,:),robo(2,:),'k' , 'lineWidth',2.0);
 temp = 1:Link;
