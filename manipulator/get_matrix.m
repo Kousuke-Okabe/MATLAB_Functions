@@ -2,7 +2,7 @@ function[M,H,G] = get_matrix(type, q,dq)
 
 %**************************************************************************
 %
-%   [M,H,G] = get_matrix(q,dq)
+%   [M,H,G] = get_matrix(type, q,dq)
 %
 %       M : 慣性行列
 %       H : 遠心力・コリオリ力ベクトル
