@@ -1,14 +1,15 @@
-function[] = fDraw_Graph3(FH,G,V,F)
+function[] = fDraw_Graph3(FH,G,V,F,c)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   MFPの描画
+%   グラフから多面体を描画
 %
-%   [] = fDraw_MFP3(FH,G,V,F)
+%   [] = fDraw_Graph3(FH,G,V,F,c)
 %       FH: Figure Handle
 %       G : グラフ
 %       V : 頂点データ
 %       F : 描画フラグ　2:2D 3:3D
+%       c : Color
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -66,7 +67,7 @@ for i = 1:size(G,2)
                 end
             end
             if F==3 || F==32 || F==23
-                plot3([V(1,i),V(1,j)],[V(2,i),V(2,j)],[V(3,i),V(3,j)],'m')
+                plot3([V(1,i),V(1,j)],[V(2,i),V(2,j)],[V(3,i),V(3,j)],c)
             end
         end
     end
@@ -75,7 +76,7 @@ end
 if F==2 || F==23 || F==32
     disp('とりあえず平面凸包を使用')
     k = convhull(Vc(1,1:cnt)',Vc(2,1:cnt)');
-    plot(Vc(1,k),Vc(2,k),'m');
+    plot(Vc(1,k),Vc(2,k),c);
 end
 
 axis equal

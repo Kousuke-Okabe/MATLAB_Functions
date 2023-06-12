@@ -17,17 +17,23 @@ function[] = fRoboAnimation(type,FH,q, r,Ts)
 %**************************************************************************
 
 % %%
-% clear
+% clear all
+% 
+% type = '2d_RRRR';
+% 
 % FH = 1;
+% q = [0; pi/6; pi/4; pi/3];
 % r = [ 0.1; 0.2 ];
-% Rx = pi;
-% [q, error] = fIKinematics(r,Rx)
 % Ts = 0.001;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ìÆâÊêßçÏÉtÉâÉO
 F_movie = 0;
+if F_movie ==1
+    disp('Recording moevie.');
+end
+
 pSpeed = 1/10;
 fps = 15;
 alpha = fix(pSpeed/(fps*Ts));
@@ -88,8 +94,11 @@ figure(FH)
     hold on
     axis equal
     box on
-    xlim([-0.1, 0.4])
-    ylim([-0.1, 0.4])
+    xlim([-0.0, 0.4])
+    ylim([-0.1, 0.3])
+    
+    plot([-0.5, 0.5],[0,0],'k')
+    plot([0,0],[-0.5, 0.5],'k')
     
     xlabel('$$x$$ [m]', 'FontSize',21, 'interpreter','latex')
     ylabel('$$y$$ [m]', 'FontSize',21, 'interpreter','latex')
@@ -160,7 +169,7 @@ for i = 1:Ns
     
     if F_movie == 1 && rem(i,alpha) == 0
         iMov = iMov + 1;
-        MOV(iMov) = getframe(1);
+        MOV(iMov) = getframe(FH);
     end
 end
 

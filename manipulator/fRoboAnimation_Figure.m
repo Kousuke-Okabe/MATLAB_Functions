@@ -2,7 +2,7 @@ function[] = fRoboAnimation_Figure(FH)
 
 %**************************************************************************
 %
-%   [] = fRoboAmination_Figure(FH)
+%   [] = fRoboAnimation_Figure(FH)
 %
 %                                                       19.09.12 by OKB
 %**************************************************************************
@@ -17,7 +17,7 @@ function[] = fRoboAnimation_Figure(FH)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 figure(FH)
-%     clf(FH)
+    clf(FH)
     hold on
     axis equal
     box on

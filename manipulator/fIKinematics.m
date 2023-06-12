@@ -15,12 +15,13 @@ draw = 0;
 
 % %%
 % clear
-% type = '2d_RRR'
+% type = '2d_RRRR'
 % 
 % r = [
-%     0.2000;
-%     0.2000;
-%     1.0472
+%     0.3;
+%     0.0;
+%     0.25;
+%     0.05
 %     ];
 % 
 % draw = 1;
@@ -44,9 +45,40 @@ end
 
 
 switch type
+    case '2d_RR' % 平面2関節
+        k = -1;  % 1:右手形  -1:左手形
+    
+        a = acos( (l(1)^2-l(2)^2+r(1)^2+r(2)^2)/(2*l(1)*sqrt(r(1)^2+r(2)^2)) );
+        b = acos( (l(1)^2+l(2)^2-r(1)^2-r(2)^2)/(2*l(1)*l(2)) );
+        
+        q(1) = atan2(r(2),r(1)) - k*a;
+        q(2) = k*(pi-b);
+   
 
-    case '3d_RRRR'
-        % 空間4リンク
+    
+	case '2d_RRR' % 平面3リンク
+        k = -1;  % 1:右手形  -1:左手形
+        
+        x = r(1,1);
+        y = r(2,1);
+        z = r(3,1);
+
+        l1 = l(1);
+        l2 = l(2);
+        l3 = l(3);
+
+        q(1,1) = atan2( y-l3*sin(z(1,1)),(x-l3*cos(z(1,1))) ) - k*real(acos( (l1^2-l2^2+l3^2+x^2+y^2-2*l3*(x*cos(z(1,1))+y*sin(z(1,1))))/(2*l1*sqrt(x^2+y^2+l3^2-2*l3*(x*cos(z(1,1))+y*sin(z(1,1))))) ));
+        q(2,1) = k*(pi - real(acos( (l1^2+l2^2-l3^2-x^2-y^2+2*l3*(x*cos(z(1,1))+y*sin(z(1,1))))/(2*l1*l2) )));
+        q(3,1) = z(1,1) -q(1,1) -q(2,1);
+
+        if r(1:2)'*r(1:2) > sum(l)
+            disp('error : out of range')
+            error = 1;
+        end
+        
+
+        
+    case '3d_RRRR' % 空間4リンク
         x = r(1,1);
         y = r(2,1);
         z = r(3,1);
@@ -70,8 +102,7 @@ switch type
 
 
 
-    case '3d_PRRR'
-        % 直動スライダ空間4リンク
+    case '3d_PRRR' % 直動スライダ空間4リンク
         x = r(1,1);
         y = r(2,1);
         z = r(3,1);
@@ -89,33 +120,6 @@ switch type
         if sum(isnan(q)) > 0 || sum(isinf(q)) >0 || sum(abs(imag(q))) > 0
             error = 1;
             return;
-        end
-
-
-
-
-
-
-
-    case '2d_RRR'
-        % 平面3リンク
-        k = 1;
-        
-        x = r(1,1);
-        y = r(2,1);
-        z = r(3,1);
-
-        l1 = l(1);
-        l2 = l(2);
-        l3 = l(3);
-
-        q(1,1) = atan2( y-l3*sin(z(1,1)),(x-l3*cos(z(1,1))) ) - k*real(acos( (l1^2-l2^2+l3^2+x^2+y^2-2*l3*(x*cos(z(1,1))+y*sin(z(1,1))))/(2*l1*sqrt(x^2+y^2+l3^2-2*l3*(x*cos(z(1,1))+y*sin(z(1,1))))) ));
-        q(2,1) = k*(pi - real(acos( (l1^2+l2^2-l3^2-x^2-y^2+2*l3*(x*cos(z(1,1))+y*sin(z(1,1))))/(2*l1*l2) )));
-        q(3,1) = z(1,1) -q(1,1) -q(2,1);
-
-        if r(1:2)'*r(1:2) > sum(l)
-            disp('error : out of range')
-            error = 1;
         end
 
 
@@ -151,11 +155,11 @@ switch type
         type2 = '2d_RR';
         param = get_parameter(type1);
             Link = param.Link;
-            Ts = param.Ts;
-
-        N = 1000;
-        q = nan(Link,N);
-        q(:,1) = ones(Link,1)*pi/2;
+            
+        K = -1; % 1:右手形　-1:左手形
+        N = 10000;
+        q = zeros(Link,N);
+        q(:,1) = ones(Link,1)*pi/2*K;
         I = eye(Link);
 
         for k = 1:N
@@ -167,15 +171,15 @@ switch type
             J2 = [J2,zeros(2,2)];
             Jp2 = J2'/(J2*J2');
 
-            q(:,k+1) = q(:,k) + ( Jp1*(r(1:2)-r1) + (I-Jp1*J1)*Jp2*(r(3:4)-r2) )/5;
+            q(:,k+1) = q(:,k) + ( Jp1*(r(1:2)-r1) + (I-Jp1*J1)*Jp2*(r(3:4)-r2) )/3;
 
-            for i = 2:2:Link
-                if q(i,k+1) < 0
-                    q(i,k+1) = - q(i,k+1);
-                elseif q(i,k+1) > pi
-                    q(i,k+1) =  2*pi - q(i,k+1);
-                end
-            end
+%             for i = 2:2:Link
+%                 if q(i,k+1) < 0
+%                     q(i,k+1) = - q(i,k+1);
+%                 elseif q(i,k+1) > pi
+%                     q(i,k+1) =  2*pi - q(i,k+1);
+%                 end
+%             end
         end
 
         if draw == 1

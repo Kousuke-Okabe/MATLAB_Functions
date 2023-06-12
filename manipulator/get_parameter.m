@@ -38,6 +38,18 @@ Kd = 5000;       % “d—¬’x‚êŒW”
 
 % disp('get_parameter')
 switch type
+    % tblArm
+    case 'tblArm'
+        Kt = [1.3288; 1.416; 0.6732];
+        T_offset = [0.0; 0.0; 0.0];
+        iGain =[4; 4; 4];
+
+        param = struct( ...
+            'Kt',       Kt, ...
+            'T_offset', T_offset, ...
+            'iGain',    iGain ...
+            );
+    
     % Planer 1-links Manipulator
     case '2d_R'
         Link = 1;
