@@ -20,7 +20,7 @@ function[M,H,G] = get_matrix(type, q,dq)
 param = get_parameter(type);
 l = param.l;
 lg = param.lg;
-m = param.M;
+m = param.m;
 It = param.I;
 
 % [type,Link,Sigma, l,lg,m,It, Tlim,dqlim, coulomb,viscous] = get_paramater();
@@ -73,7 +73,7 @@ switch type
 
 
 
-    case '2d_RRR'
+    case {'2d_RRR', 'C03160'}
         % •½–Ê3ƒŠƒ“ƒN
 %         M = [ It(1) + It(2) + It(3) + l(1)^2*m(2) + l(1)^2*m(3) + l(2)^2*m(3) + lg(1)^2*m(1) + lg(2)^2*m(2) + lg(3)^2*m(3) + 2*l(1)*lg(3)*m(3)*cos(q(2) + q(3)) + 2*l(1)*l(2)*m(3)*cos(q(2)) + 2*l(1)*lg(2)*m(2)*cos(q(2)) + 2*l(2)*lg(3)*m(3)*cos(q(3)), It(2) + It(3) + l(2)^2*m(3) + lg(2)^2*m(2) + lg(3)^2*m(3) + l(1)*lg(3)*m(3)*cos(q(2) + q(3)) + l(1)*l(2)*m(3)*cos(q(2)) + l(1)*lg(2)*m(2)*cos(q(2)) + 2*l(2)*lg(3)*m(3)*cos(q(3)), It(3) + lg(3)^2*m(3) + l(1)*lg(3)*m(3)*cos(q(2) + q(3)) + l(2)*lg(3)*m(3)*cos(q(3)) ;
 %               It(2) + It(3) + l(2)^2*m(3) + lg(2)^2*m(2) + lg(3)^2*m(3) + l(1)*lg(3)*m(3)*cos(q(2) + q(3)) + l(1)*l(2)*m(3)*cos(q(2)) + l(1)*lg(2)*m(2)*cos(q(2)) + 2*l(2)*lg(3)*m(3)*cos(q(3)),                                                                                           It(2) + It(3) + l(2)^2*m(3) + lg(2)^2*m(2) + lg(3)^2*m(3) + 2*l(2)*lg(3)*m(3)*cos(q(3)),                                    It(3) + lg(3)^2*m(3) + l(2)*lg(3)*m(3)*cos(q(3)) ;

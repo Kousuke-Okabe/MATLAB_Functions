@@ -60,7 +60,7 @@ switch type
               0,                                                   0,            - l(4)*sin(q(3) + q(4)) - l(3)*sin(q(3)),           -l(4)*sin(q(3) + q(4)) ];
 
 
-    case '2d_RRR'
+    case {'2d_RRR', '2d_RRR_e', 'C03160'}
         % •½–Ê3ƒŠƒ“ƒN
         J = [ -l(2)*sin(q(1) + q(2)) - l(1)*sin(q(1)) - l(3)*sin(q(1) + q(2) + q(3)), - l(2)*sin(q(1) + q(2)) - l(3)*sin(q(1) + q(2) + q(3)), -l(3)*sin(q(1) + q(2) + q(3)) ;
                l(2)*cos(q(1) + q(2)) + l(1)*cos(q(1)) + l(3)*cos(q(1) + q(2) + q(3)),   l(2)*cos(q(1) + q(2)) + l(3)*cos(q(1) + q(2) + q(3)),  l(3)*cos(q(1) + q(2) + q(3)) ];

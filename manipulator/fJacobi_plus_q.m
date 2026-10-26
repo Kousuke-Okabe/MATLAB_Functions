@@ -1,11 +1,12 @@
-function[J,Jp,dJ,U,err] = fJacobi_plus(r,dr, Rx,Rv)
+function[J,Jp,dJ,U,err] = fJacobi_plus_q(type, q,dq)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   [J,Jp,dJ,U,error] = fJacobi_plus(r,dr, Rx,Rv)
+%   [J,Jp,dJ,U,err] = fJacobi_plus_q(type, q,dq)
 %
 %       r   : 手先位置　r=[x,y]'
-%       Rx  : 冗長姿勢
+%       eta : 冗長姿勢
+%       z   : 内部運動速度
 %
 %       J   : ヤコビ行列
 %       Jp  : ヤコビ行列の疑似逆行列
@@ -28,22 +29,15 @@ draw = 0;
 
 err = 0;
 
-[m, check] = size(r);
-if check ~= 1
-    disp('error : f3L_Jacobi_plus input')
-    
-    err = 1;
-    return;
-end
-
-param = get_parameter;
+param = get_parameter(type);
     Link = param.Link;
     l = param.l;
 
-[J,Jp,U,error] = fJacobi(r,Rx);
+[J,Jp,U,error] = fJacobi_q(type,q);
 
-[q, err] = fIKinematics(r(:,1),Rx(:,1));
-dq = Jp*dr + U*Rv;
+% [J,Jp,U,error] = fJacobi(r,eta);
+% [q, err] = fIKinematics(r(:,1),eta(:,1));
+% dq = Jp*dr + U*z;
 
 
 switch type
@@ -65,7 +59,7 @@ switch type
 
 
 
-    case '2d_RRR'
+    case {'2d_RRR', 'C03160'}
         % 平面3リンク
         dJ = [ - dq(1)*(l(2)*cos(q(1) + q(2)) + l(1)*cos(q(1)) + cos(q(1) + q(2) + q(3))*l(3)) - dq(2)*(l(2)*cos(q(1) + q(2)) + cos(q(1) + q(2) + q(3))*l(3)) - cos(q(1) + q(2) + q(3))*dq(3)*l(3), - dq(1)*(l(2)*cos(q(1) + q(2)) + cos(q(1) + q(2) + q(3))*l(3)) - dq(2)*(l(2)*cos(q(1) + q(2)) + cos(q(1) + q(2) + q(3))*l(3)) - cos(q(1) + q(2) + q(3))*dq(3)*l(3), -cos(q(1) + q(2) + q(3))*l(3)*(dq(1) + dq(2) + dq(3)) ;
                - dq(1)*(l(2)*sin(q(1) + q(2)) + l(1)*sin(q(1)) + sin(q(1) + q(2) + q(3))*l(3)) - dq(2)*(l(2)*sin(q(1) + q(2)) + sin(q(1) + q(2) + q(3))*l(3)) - sin(q(1) + q(2) + q(3))*dq(3)*l(3), - dq(1)*(l(2)*sin(q(1) + q(2)) + sin(q(1) + q(2) + q(3))*l(3)) - dq(2)*(l(2)*sin(q(1) + q(2)) + sin(q(1) + q(2) + q(3))*l(3)) - sin(q(1) + q(2) + q(3))*dq(3)*l(3), -sin(q(1) + q(2) + q(3))*l(3)*(dq(1) + dq(2) + dq(3)) ];

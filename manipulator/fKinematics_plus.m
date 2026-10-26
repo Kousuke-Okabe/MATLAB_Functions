@@ -1,8 +1,8 @@
-function[r,dr,ddr,Rx,Rv,Ra] = fKinematics_plus(type, q,dq,ddq)
+function[r,dr,ddr,eta,dz,Ra] = fKinematics_plus(type, q,dq,ddq)
 
 %**************************************************************************
 %
-%   [r,dr,ddr,Rx,Rv,Ra] = fKinematics_plus(q,dq,ddq)
+%   [r,dr,ddr,Rx,Rv,Ra] = fKinematics_plus(type, q,dq,ddq)
 %
 %       r   : éËêÊà íu      r   = [x,y].'
 %       dr  : éËêÊë¨ìx      dr  = [dx,dy].'
@@ -23,17 +23,13 @@ function[r,dr,ddr,Rx,Rv,Ra] = fKinematics_plus(type, q,dq,ddq)
 % param = get_parameter(type);
 % [type,Link,Sigma, l,lg,M,I, Tlim,dqlim, C,mu, Joint,L_pat] = get_paramater();
 
-temp = kinematics(q);
-r = temp(:,Link+1);
-Rx = Sigma*q;
+r = fKinematics(type,q);
+eta = sum(q);
 
-[J,Jp,U,error] = f3L_Jacobi(r,Rx);
+[J,Jp,dJ,U,err] = fJacobi_plus_q(type, q,dq);
 
 dr = J*dq;
-Rv = U'*dq;
-
-[J,Jp,dJ,U,error] = f3L_Jacobi_plus(r,dr, Rx,Rv);
-
+dz = U'*dq;
 ddr = J*ddq + dJ*dq;
 Ra = U'*ddq;
 

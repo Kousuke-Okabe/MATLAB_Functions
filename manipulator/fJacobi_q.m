@@ -43,7 +43,6 @@ end
 
 param = get_parameter(type);
 %     type = param.type;
-    Link = param.Link;
     l = param.l;
 
 [J,Jp] = fJacobi_minus_q(type,q);
@@ -57,7 +56,7 @@ param = get_parameter(type);
 
 switch type
 
-    case '2d_RRR'
+    case {'2d_RRR', 'C03160'}
         % JpÇ…ÇÊÇÈUÇÃì±èo
         U = [
                 -(sqrt(2)*l(2)*l(3)*sin(q(3)))/(sqrt(-2*l(1)^2*l(3)^2*cos(2*q(3)+2*q(2))-2*l(1)*l(2)*l(3)^2*cos(2*q(3)+q(2))-2*l(1)^2*l(2)*l(3)*cos(q(3)+2*q(2))-2*l(2)^2*l(3)^2*cos(2*q(3))+2*l(1)^2*l(2)*l(3)*cos(q(3))-l(1)^2*l(2)^2*cos(2*q(2))+2*l(1)*l(2)*l(3)^2*cos(q(2))+(2*l(2)^2+2*l(1)^2) *l(3)^2+l(1)^2*l(2)^2));

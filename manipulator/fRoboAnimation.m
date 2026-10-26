@@ -40,7 +40,7 @@ alpha = fix(pSpeed/(fps*Ts));
 
 % ï°êîï`âÊÉtÉâÉO
 F_draw = 0;
-nDraw = 6;
+nDraw = 20;
 
 F_HandTrack = 0;
 
@@ -50,7 +50,7 @@ param = get_parameter(type);
     L = param.l;
     Joint = param.Joint;
 
-HandSize = 15/1000;
+HandSize = 0/1000;
 L_t = L;
 if F_draw == 0
     L_t(Link) = L(Link) - HandSize/2;
@@ -94,11 +94,11 @@ figure(FH)
     hold on
     axis equal
     box on
-    xlim([-0.0, 0.4])
-    ylim([-0.1, 0.3])
+%     xlim([-0.0, 0.5])
+%     ylim([-0.1, 0.3])
     
-    plot([-0.5, 0.5],[0,0],'k')
-    plot([0,0],[-0.5, 0.5],'k')
+%     plot([-0.5, 0.5],[0,0],'k')
+%     plot([0,0],[-0.5, 0.5],'k')
     
     xlabel('$$x$$ [m]', 'FontSize',21, 'interpreter','latex')
     ylabel('$$y$$ [m]', 'FontSize',21, 'interpreter','latex')
@@ -116,7 +116,7 @@ figure(FH)
 %     S = plot( robo_l(1,:,1),robo_l(2,:,1),'b.' , 'lineWidth',2.0, 'MarkerFaceColor','w', 'MarkerSize',15);
     
     if F_draw == 0
-        R = plot(r(1,1),r(2,1),'ro');
+%         R = plot(r(1,1),r(2,1),'ro');
         O = plot( robo(1,temp(~Joint),1),robo(2,temp(~Joint),1),'ko' , 'lineWidth',2.0, 'MarkerFaceColor','w', 'MarkerSize',10);
         H = line(Hand(1,:)+diag(robo_r(1,Link+1,Ns))*ones(1,4), Hand(2,:)+diag(robo_r(2,Link+1,Ns))*ones(1,4));
         set(H, 'LineWidth',2.0, 'Color','k')
@@ -153,7 +153,7 @@ for i = 1:Ns
     end
     
     if  F_draw == 0
-        set(R, 'Xdata',r(1,i), 'Ydata',r(2,i));
+%         set(R, 'Xdata',r(1,i), 'Ydata',r(2,i));
         set(O, 'Xdata',robo(1,temp(~Joint),i), 'Ydata',robo(2,temp(~Joint),i) );
         set(H, 'Xdata',Hand(1,:)+diag(robo_r(1,Link+1,i))*ones(1,4), 'Ydata',Hand(2,:)+diag(robo_r(2,Link+1,i))*ones(1,4));
     end

@@ -48,7 +48,7 @@ param = get_parameter(type);
 [q, err] = fIKinematics(type, x(:,1));
 switch type
     % •½–Ê3ƒŠƒ“ƒN
-    case '2d_RRR'
+    case {'2d_RRR', '2d_RRR_e', 'C03160'}
         [J,Jp,Jd,U,Ud,Jed] = fJacobi_tensor_q(type, q);
         
 

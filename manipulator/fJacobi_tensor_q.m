@@ -2,7 +2,7 @@ function[J,Jp,Jd,U,Ud,Jed] = fJacobi_tensor_q(type, q)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   [J,Jp,Jd,U,Ud,Jed] = fJacobi_tensor(q)
+%   [J,Jp,Jd,U,Ud,Jed] = fJacobi_tensor_q(type, q)
 %
 %       q   : ä÷êﬂäpìx
 %
@@ -18,6 +18,9 @@ draw = 0;
 
 % %%
 % clear
+% 
+% type = 'C03160'
+% 
 % q = [
 %     pi/3;
 %     -pi/6;
@@ -61,7 +64,7 @@ switch type
 
 
 
-    case '2d_RRR'
+    case {'2d_RRR', 'C03160'}
         % ïΩñ 3ÉäÉìÉN
         Jd = nan(size(J,1),size(J,2),Link);
         Jd(:,:,1) = [

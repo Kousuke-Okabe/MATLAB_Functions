@@ -1,8 +1,8 @@
-function[Vt] = get_TranslateVector(q,dx)
+function[Vt] = get_TranslateVector(type,q,dx)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   [Vt = get_TranslateVector(x,dx)
+%   [Vt] = get_TranslateVector(type,q,dx)
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,16 +14,16 @@ function[Vt] = get_TranslateVector(q,dx)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-param = get_parameter();
+param = get_parameter(type);
     N = param.Link;
 
-[J,Jp,Jd,U,Ud,err] = fJacobi_tensor_q(q);
+[J,Jp,Jd,U,Ud,err] = fJacobi_tensor_q(type,q);
 Je = [J;U'];
 Jei = [Jp,U];
 
 
 dq = Jei*dx;
-[M,h,g,hd] = get_matrix_plus(q,dq);
+[M,h,g,hd] = get_matrix_plus(type,q,dq);
 
 % Transpose Vector of DMP
 Jed = Jd;

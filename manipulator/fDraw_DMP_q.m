@@ -1,8 +1,8 @@
-function[AH] = fDraw_DMP(FH,drawDMP3d, Gr,Gz, x,dx)
+function[AH] = fDraw_DMP_q(FH, type, drawDMP3d, Gr,Gz, q,dq)
 
 %**************************************************************************
 %
-%   [AH] = fDraw_DMP(FH,drawDMP3d, Gr,Gz,  x,dx)
+%   [AH] = fDraw_DMP_q(FH, type, drawDMP3d, Gr,Gz, q,dq)
 %
 %       FH  : フィギュアーハンドル
 %       drawDMP3d : Flag of drawingDMP on 3Dspace. yes:1 no:0
@@ -11,53 +11,37 @@ function[AH] = fDraw_DMP(FH,drawDMP3d, Gr,Gz, x,dx)
 %       x   : Position on ExOS
 %       dx  : Velocity on ExOS
 %
-%       v2 : デティールアップバージョン
-%       v3 : 直動系対応
-%       v4 : 動的可操作性多面体描画
-%
 %**************************************************************************
 
 % %%
 % clear
+% type = 'C03160';
 % 
 % FH = 1;
 % Gr = 1/150;
 % Gz = Gr/20;
 % 
-% x = [0.2; 0.2; pi/6];
-% dx = [0; 0; 30];
+% q = [2.2484; 0.6332; -0.9803];
+% dq = [0;0;0];
 % 
-% q = zeros(3,1);
-% dq = zeros(3,1);
-% q(:,1) = fIKinematics(x(1:2),x(3));
-% 
-% figure(FH)
-% clf(FH)
-% fRoboAnimation(FH,q, x(1:2),0)
-% 
-% drawDMP3d = 0;
+% drawDMP3d = 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 figure(FH)
 hold on
 
-% x = [r;z];
-% dx = [dr; dz];
+x = [fKinematics(type,q); sum(q)];
 
-param = get_parameter();
+param = get_parameter(type);
     Tlim = param.Tlim;
     N = param.Link;
 
-[J,Jp,Jd,U,Ud,err] = fJacobi_tensor(x(1:N-1),dx(1:N-1), x(N),dx(N));
+[J,Jp,Jd,U,Ud,err] = fJacobi_tensor_q(type, q);
 Je = [J;U'];
 Jei = [Jp,U];
 
-q = fIKinematics(x(1:N-1),x(N));
-% dq = Jp*dr(:,1)+U*dz;
-dq = Jei*dx;
-
-[M,h,g,hd] = get_matrix_plus(q,dq);
+[M,h,g,hd] = get_matrix_plus(type,q,dq);
 
 
 % Vertex of DMP
@@ -77,17 +61,17 @@ for i = -1:2:1
 end
 
 % Drawing Basis Vector of DMP
-DMP_t = get_TranslateVector(x,dx);
+DMP_t = get_TranslateVector_q(type,q,dq);
 
 % Adding transpose vector to DMP
 for i = 1:size(DMP_v,2)
     DMP_v(:,i) = DMP_v(:,i)+DMP_t;
 end
 
-% Drawing transpose vector
-figure(FH)
-quiver3(x(1),x(2),0, DMP_t(1)*Gr,DMP_t(2)*Gr,DMP_t(3)*Gz,'m', 'LineWidth',2,'AutoScaleFactor',1)
-title(strcat( 'Gr=1/',num2str(1/Gr),', Gz=1/',num2str(1/Gz) ));
+% % Drawing transpose vector
+% figure(FH)
+% quiver3(x(1),x(2),0, DMP_t(1)*Gr,DMP_t(2)*Gr,DMP_t(3)*Gz,'m', 'LineWidth',2,'AutoScaleFactor',1)
+% title(strcat( 'Gr=1/',num2str(1/Gr),', Gz=1/',num2str(1/Gz) ));
 
 % DMP drawing 3dim space   
 if drawDMP3d
@@ -135,7 +119,15 @@ if drawDMP3d == 0
     end
 
     DMP0 = convhull(DMP0_v(1,1:l),DMP0_v(2,1:l));
-    AH = plot(x(1)+DMP0_v(1,DMP0)*Gr,x(2)+DMP0_v(2,DMP0)*Gr,'g', 'LineWidth',2);
+    AH = plot(x(1)+DMP0_v(1,DMP0)*Gr,x(2)+DMP0_v(2,DMP0)*Gr,'m', 'LineWidth',2);
 
 end
+
+% % Test
+% fRoboAnimation(type,FH,q, x(1:2),0)
+% for i = 1:3
+%     quiver3(x(1),x(2),0, ...
+%             Gr*Jt(1,i)*Tlim(i),Gr*Jt(2,i)*Tlim(i),Gz*Jt(3,i)*Tlim(i),'b', 'AutoScaleFactor',1)
+% end
+
 end

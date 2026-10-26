@@ -18,10 +18,10 @@ draw = 0;
 % type = '2d_RRRR'
 % 
 % r = [
-%     0.3;
+%     0.2;
 %     0.0;
-%     0.25;
-%     0.05
+%     0.0;
+%     -pi/2
 %     ];
 % 
 % draw = 1;
@@ -56,8 +56,8 @@ switch type
    
 
     
-	case '2d_RRR' % 平面3リンク
-        k = -1;  % 1:右手形  -1:左手形
+	case {'2d_RRR', '2d_RRR_e', 'C03160'} % 平面3リンク
+        k = 1;  % 1:右手形  -1:左手形
         
         x = r(1,1);
         y = r(2,1);
@@ -127,71 +127,80 @@ switch type
 
 
     case '2d_RRRR'
-        % 作業空間[x,y,eta] + 内部運動
-%         x = r(1);
-%         y = r(2);
-%         eta = r(3);
+        % 作業空間[x,y,eta3,eta4]
+        x = r(1);
+        y = r(2);
+        Rx = r(3);
+        eta = r(4);
+
+        l1 = l(1);
+        l2 = l(2);
+        l3 = l(3);
+        l4 = l(4);
+
+        xdd = x - l3*cos(Rx) - l4*cos(eta);
+        ydd = y - l3*sin(Rx) - l4*sin(eta);
+
+        k = -1;  % 1:右手形  -1:左手形
+    
+        a = acos( (l(1)^2-l(2)^2+r(1)^2+r(2)^2)/(2*l(1)*sqrt(r(1)^2+r(2)^2)) );
+        b = acos( (l(1)^2+l(2)^2-r(1)^2-r(2)^2)/(2*l(1)*l(2)) );
+        
+        q(1) = atan2(r(2),r(1)) - k*a;
+        q(2) = k*(pi-b);
+
+        q(1,1) = atan2(ydd,xdd) - k*acos( (l1^2-l2^2+xdd^2+ydd^2)/(2*l1*sqrt(xdd^2+ydd^2)) );
+        q(2,1) = k*( pi - acos( (l1^2+l2^2-xdd^2-ydd^2)/(2*l1*l2) ));
+        q(3,1) = Rx - q(1,1) - q(2,1);
+        q(4,1) = eta - Rx;
+
+        if r(1:2,1).'*r(1:2,1) > sum(l)
+            disp('error f3L_iKinematics : out of range')
+            error = 1;
+        end
+
+%         % Main task 手先位置、 Sub task r2=第3関節位置
+%         type1 = '2d_RRRR';
+%         type2 = '2d_RR';
+%         param = get_parameter(type1);
+%             Link = param.Link;
 % 
-%         l1 = l(1);
-%         l2 = l(2);
-%         l3 = l(3);
-%         l4 = l(4);
+%         K = -1; % 1:右手形　-1:左手形
+%         N = 10000;
+%         q = zeros(Link,N);
+%         q(:,1) = ones(Link,1)*pi/2*K;
+%         I = eye(Link);
 % 
-%         xdd = x - l3*cos(Rx) - l4*cos(eta);
-%         ydd = y - l3*sin(Rx) - l4*sin(eta);
+%         for k = 1:N
+%             r1 = fKinematics(type1,q(:,k));
+%             r2 = fKinematics(type2,q(1:2,k));
 % 
-%         q(1,1) = atan2(ydd,xdd) - real(acos( (l1^2-l2^2+xdd^2+ydd^2)/(2*l1*sqrt(xdd^2+ydd^2)) ));
-%         q(2,1) = pi - real(acos( (l1^2+l2^2-xdd^2-ydd^2)/(2*l1*l2) ));
-%         q(3,1) = Rx - q(1,1) - q(2,1);
-%         q(4,1) = eta - Rx;
+%             [J1,Jp1] = fJacobi_minus_q(type1,q(:,k));
+%             [J2,Jp2] = fJacobi_minus_q(type2,q(1:2,k));
+%             J2 = [J2,zeros(2,2)];
+%             Jp2 = J2'/(J2*J2');
 % 
-%         if r(1:2,1).'*r(1:2,1) > sum(l)
-%             disp('error f3L_iKinematics : out of range')
-%             error = 1;
+%             q(:,k+1) = q(:,k) + ( Jp1*(r(1:2)-r1) + (I-Jp1*J1)*Jp2*(r(3:4)-r2) )/3;
+% 
+% %             for i = 2:2:Link
+% %                 if q(i,k+1) < 0
+% %                     q(i,k+1) = - q(i,k+1);
+% %                 elseif q(i,k+1) > pi
+% %                     q(i,k+1) =  2*pi - q(i,k+1);
+% %                 end
+% %             end
 %         end
-
-        % Main task 手先位置、 Sub task r2=第3関節位置
-        type1 = '2d_RRRR';
-        type2 = '2d_RR';
-        param = get_parameter(type1);
-            Link = param.Link;
-            
-        K = -1; % 1:右手形　-1:左手形
-        N = 10000;
-        q = zeros(Link,N);
-        q(:,1) = ones(Link,1)*pi/2*K;
-        I = eye(Link);
-
-        for k = 1:N
-            r1 = fKinematics(type1,q(:,k));
-            r2 = fKinematics(type2,q(1:2,k));
-
-            [J1,Jp1] = fJacobi_minus_q(type1,q(:,k));
-            [J2,Jp2] = fJacobi_minus_q(type2,q(1:2,k));
-            J2 = [J2,zeros(2,2)];
-            Jp2 = J2'/(J2*J2');
-
-            q(:,k+1) = q(:,k) + ( Jp1*(r(1:2)-r1) + (I-Jp1*J1)*Jp2*(r(3:4)-r2) )/3;
-
-%             for i = 2:2:Link
-%                 if q(i,k+1) < 0
-%                     q(i,k+1) = - q(i,k+1);
-%                 elseif q(i,k+1) > pi
-%                     q(i,k+1) =  2*pi - q(i,k+1);
-%                 end
-%             end
-        end
-
-        if draw == 1
-            FH = 1;
-            figure(FH)
-            clf(FH)
-            grid on
-            fRoboAnimation(type1,FH,q(:,1:N), diag(r(1:2,1))*ones(2,N),0)
-            q(:,k+1)
-        end
-
-        q = q(:,k+1);
+        % 
+        % if draw == 1
+        %     FH = 1;
+        %     figure(FH)
+        %     clf(FH)
+        %     grid on
+        %     fRoboAnimation(type,FH,q(:,1), diag(r(1:2,1))*ones(2,N),0)
+        %     q(:,k+1)
+        % end
+        % 
+        % q = q(:,k+1);
 
 
 

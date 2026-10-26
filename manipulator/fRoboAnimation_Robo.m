@@ -1,12 +1,13 @@
-function[] = fRoboAnimation_Robo(FH,type,q)
+function[P] = fRoboAnimation_Robo(FH,type,q,AH)
 
 %**************************************************************************
 %
-%   [] = fRoboAnimation_Robo(FH,type,q)
+%   [AH] = fRoboAnimation_Robo(FH,type,q,AH)
 %
 %       FH      : Figure Handle
 %       type    : Robot Type
 %       q       : ä÷êﬂäpìx      q = [q1, q2, q3].'
+%       AH      : AxisHandle -1:non
 %
 %                                                       14.10.03 by OKB
 %**************************************************************************
@@ -34,7 +35,7 @@ L_t = L;
     L_t(Link) = L(Link) - HandSize/2;
 % end
 
-Ns = size(q,2);
+% Ns = size(q,2);
 robo = zeros(2,Link+1,1);
 robo_r = zeros(2,Link+1,1);
 robo_l = zeros(2,sum(Joint)*2);
@@ -58,17 +59,23 @@ for i = 1:Link
     end
 end
 
-Hand_0 = [ HandSize/2, -HandSize/2, -HandSize/2,  HandSize/2 ;
-           HandSize/2,  HandSize/2, -HandSize/2, -HandSize/2  ];
-
-Hand = [ cos(sum(imcomplement(Joint).*q(:)))  -sin(sum(imcomplement(Joint).*q(:))) ;
-         sin(sum(imcomplement(Joint).*q(:))),  cos(sum(imcomplement(Joint).*q(:))) ]*Hand_0;
+% Hand_0 = [ HandSize/2, -HandSize/2, -HandSize/2,  HandSize/2 ;
+%            HandSize/2,  HandSize/2, -HandSize/2, -HandSize/2  ];
+% 
+% Hand = [ cos(sum(imcomplement(Joint).*q(:)))  -sin(sum(imcomplement(Joint).*q(:))) ;
+%          sin(sum(imcomplement(Joint).*q(:))),  cos(sum(imcomplement(Joint).*q(:))) ]*Hand_0;
 
 
 %plot(r(1,:),r(2,:),'g-', 'lineWidth',2.0);%, 'Color',Color);
 
-P = plot( robo(1,:),robo(2,:),'k' , 'lineWidth',2.0);
-temp = 1:Link;
+if AH < 0
+    P = plot( robo(1,:),robo(2,:),'k' , 'lineWidth',2.0);
+else
+    set(AH, 'Xdata',robo(1,:), 'Ydata',robo(2,:));
+end
+
+
+% temp = 1:Link;
 %     S = plot( robo_l(1,:,1),robo_l(2,:,1),'b.' , 'lineWidth',2.0, 'MarkerFaceColor','w', 'MarkerSize',15);
 
 % if F_draw == 0
@@ -76,8 +83,8 @@ temp = 1:Link;
 %     H = line(Hand(1,:)+diag(robo_r(1,Link+1,Ns))*ones(1,4), Hand(2,:)+diag(robo_r(2,Link+1,Ns))*ones(1,4));
 %     set(H, 'LineWidth',2.0, 'Color','k')
 % end
-set(gca, 'FontSize',15)
-set(gcf, 'Color',[1,1,1])
+% set(gca, 'FontSize',15)
+% set(gcf, 'Color',[1,1,1])
 
 
 

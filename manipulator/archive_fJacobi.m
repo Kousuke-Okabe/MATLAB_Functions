@@ -42,7 +42,7 @@ end
 
 switch type
 
-    case '2d_RRR'
+    case {'2d_RRR', '2d_RRR_e', 'C03160'}
         [q, err] = fIKinematics(type, x);
         [J,Jp,U,err] = fJacobi_q(type, q);
         
